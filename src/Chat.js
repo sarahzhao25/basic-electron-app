@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { ChatManager, TokenProvider } from '@pusher/chatkit';
 import MessageList from './MessageList';
+import SendMessageForm from './SendMessageForm';
 const instanceLocator = 'v1:us1:8e7525cf-01c7-4e5a-81c2-1ca635184af1';
 
 class Chat extends Component {
@@ -11,6 +12,7 @@ class Chat extends Component {
       currentRoom: {},
       messages: []
     };
+    this.onSend = this.onSend.bind(this);
   }
 
   componentDidMount() {
@@ -44,12 +46,21 @@ class Chat extends Component {
       })
       .catch(console.error);
   }
+
+  onSend(text) {
+    this.state.currentUser.sendMessage({
+      text,
+      roomId: this.state.currentRoom.id
+    });
+  }
+
   render() {
     const { messages } = this.state;
     return (
       <div className="wrapper">
         <div className="chat">
           <MessageList messages={messages}/>
+          <SendMessageForm onSend={this.onSend} />
         </div>
       </div>
     )
